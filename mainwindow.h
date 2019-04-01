@@ -31,10 +31,8 @@ public:
 private:
     Ui::MainWindow *ui;
 
-    QPushButton* pb_test;
     QPushButton* pb_add;
     QPushButton* pb_query;
-    QPushButton* pb_alert;
 
     QTimer* timer;
     QLineEdit *le_date;
@@ -45,6 +43,7 @@ private:
     QSqlTableModel *tableModel;
     QItemSelectionModel *selectModel;
     QItemSelectionModel* sModel;
+    QSqlQueryModel* model;
 
     QLineEdit *le_cpmc;
     QLineEdit *le_cpgg;
@@ -70,10 +69,12 @@ private:
 
 private slots:
     void method_add();
-    void method_test();
     void method_alert();
     void method_query();
     void method_timer();
+    void method_contentReturn();
+
+    void keyPressEvent(QKeyEvent* event);
 
 };
 

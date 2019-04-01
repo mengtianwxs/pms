@@ -128,20 +128,6 @@
         </property>
        </widget>
       </item>
-      <item>
-       <widget class="QPushButton" name="pb_test">
-        <property name="text">
-         <string>Test</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="pb_alert">
-        <property name="text">
-         <string>产品修改</string>
-        </property>
-       </widget>
-      </item>
      </layout>
     </item>
     <item>
@@ -158,11 +144,6 @@
    </attribute>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
-  <action name="actionadd">
-   <property name="text">
-    <string>DB Clear</string>
-   </property>
-  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <tabstops>
@@ -175,8 +156,6 @@
   <tabstop>le_content</tabstop>
   <tabstop>pb_query</tabstop>
   <tabstop>pb_add</tabstop>
-  <tabstop>pb_test</tabstop>
-  <tabstop>pb_alert</tabstop>
   <tabstop>tableView</tabstop>
   <tabstop>cbb_dw</tabstop>
   <tabstop>le_date</tabstop>

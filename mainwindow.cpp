@@ -13,6 +13,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    //init ui
     pb_add=ui->pb_add;
     pb_query=ui->pb_query;
 
@@ -27,9 +29,9 @@ MainWindow::MainWindow(QWidget *parent) :
     le_bz=ui->le_bz;
     le_content=ui->le_content;
 
-    le_cpmc->setPlaceholderText("-");
+    le_cpmc->setPlaceholderText("- ?");
     le_cpgg->setPlaceholderText("-");
-    le_bzjg->setPlaceholderText("- ￥");
+    le_bzjg->setPlaceholderText("-");
     le_gys->setPlaceholderText("=");
     le_lxfs->setPlaceholderText("=");
     le_bz->setPlaceholderText("=");
@@ -40,6 +42,7 @@ MainWindow::MainWindow(QWidget *parent) :
     pb_add->setEnabled(false);
 
 
+//    signal slot
     connect(this->pb_add,SIGNAL(clicked()),this,SLOT(method_add()));
     connect(this->pb_query,SIGNAL(clicked()),this,SLOT(method_query()));
     connect(this->le_content,SIGNAL(returnPressed()),this,SLOT(method_contentReturn()));
@@ -78,13 +81,14 @@ MainWindow::MainWindow(QWidget *parent) :
     le_date->setEnabled(false);
 
 
-    this->setWindowTitle("PMS 0.0.1");
+    this->setWindowTitle("PMS 0.0.1 made by  mengtianwxs");
 
 
     ui->tableView->setSelectionBehavior(QAbstractItemView::SelectItems);
 //    ui->tableView->setSelectionModel(QAbstractItemView::SingleSelection);
     ui->tableView->setAlternatingRowColors(true);
 
+    //hotkey setting
     this->setFocusPolicy(Qt::StrongFocus);
 
     ui->statusBar->showMessage("'-' means must write data , '=' means need write data by yourself ...");
@@ -123,9 +127,6 @@ void MainWindow::updateTableView()
 {
 
 
-
-
-
     tableModel=new QSqlTableModel(this,db);
     tableModel->setTable("tb_main");
 
@@ -158,7 +159,7 @@ void MainWindow::updateTableView()
     ui->tableView->setColumnWidth(2,240);
     ui->tableView->setColumnWidth(5,50);
     ui->tableView->setColumnWidth(6,50);
-//    ui->tableView->sortByColumn(1,Qt::DescendingOrder);
+    ui->tableView->setColumnWidth(9,300);
 
 
 }
@@ -190,9 +191,28 @@ void MainWindow::method_add()
         le_bz->setText("-");
     }
 
-    if(s_cpmc=="" || s_cpgg=="" || s_bzjg==""){
+    if(s_cpmc==""){
+        //query last data
+        QString sql="select * from tb_main order by id desc limit 1";
+        QSqlQuery sq;
+        sq.exec(sql);
+        QString scpmc="";
+        while (sq.next()) {
+
+            scpmc=sq.value("cpmc").toString();
+
+        }
+
+       s_cpmc=scpmc;
+
+    }
+
+    if(s_cpgg=="" && s_bzjg=="")
+    {
         ui->statusBar->showMessage("- items cannot null value");
-    }else{
+    }
+    else
+    {
 
         bool q=dbquery.exec("insert into tb_main (cpmc,cpgg,lrrq,bzjg,dw,sl,gys,lxfs,bz) values ('"+s_cpmc+"','"+s_cpgg+"','"+s_lrrq+"','"+s_bzjg+"','"+s_dw+"','"+s_sl+"','"+s_gys+"','"+s_lxfs+"','"+s_bz+"');");
         if(q){
@@ -337,65 +357,67 @@ void MainWindow::method_query()
         }
 
 
-//        if(txt0=="add"){
-//            QString txt_cpmc=txt.split(" ")[1];
-//            QString txt_cpgg=txt.split(" ")[2];
-//            QString txt_lrrq=txt.split(" ")[3];
-//            QString txt_bzjg=txt.split(" ")[4];
-//            QString txt_dw=txt.split(" ")[5];
-//            QString txt_sl=txt.split(" ")[6];
-//            QString txt_gys=txt.split(" ")[7];
-//            QString txt_lxfs=txt.split(" ")[8];
-//            QString txt_bz=txt.split(" ")[9];
+        if(txt0=="add"){
+
+            QString add_sql="";
+            int txt_len=txt1.split(",").length();
 
 
 
-//            if(txt_cpmc!="" ){
-//                sql="insert into tb_main (cpmc)='"+txt_cpmc+"' where id ="+txt1;
-//                model->setQuery(sql);
-//                updateTableView();
-//            }
-//            if(s_cpgg!=""){
-//                sql="update tb_main set cpgg='"+s_cpgg+"' where id ="+txt1;
-//                model->setQuery(sql);
-//                updateTableView();
-//            }
-////            if(s_lrrq!=""){
-////                sql="update tb_main set lrrq='"+s_lrrq+"' where id ="+txt1;
-////                model->setQuery(sql);
-////                updateTableView();
-////            }
-//            if(s_bzjg!=""){
-//                sql="update tb_main set bzjg='"+s_bzjg+"' where id ="+txt1;
-//                model->setQuery(sql);
-//                updateTableView();
-//            }
-//            if(s_dw!=""){
-//                sql="update tb_main set dw='"+s_dw+"' where id ="+txt1;
-//                model->setQuery(sql);
-//                updateTableView();
-//            }
-//            if(s_sl!=""){
-//                sql="update tb_main set sl='"+s_sl+"' where id ="+txt1;
-//                model->setQuery(sql);
-//                updateTableView();
-//            }
-//            if(s_gys!=""){
-//                sql="update tb_main set gys='"+s_gys+"' where id ="+txt1;
-//                model->setQuery(sql);
-//                updateTableView();
-//            }
-//            if(s_lxfs!=""){
-//                sql="update tb_main set lxfs='"+s_lxfs+"' where id ="+txt1;
-//                model->setQuery(sql);
-//                updateTableView();
-//            }
-//            if(s_bz!=""){
-//                sql="update tb_main set bz='"+s_bz+"' where id ="+txt1;
-//                model->setQuery(sql);
-//                updateTableView();
-//            }
-//        }
+            if(txt_len==4){
+                QString txt_cpmc=txt1.split(",")[0];
+                QString txt_cpgg=txt1.split(",")[1];
+                QString txt_bzjg=txt1.split(",")[2];
+                QString txt_gys=txt1.split(",")[3];
+
+
+                add_sql="insert into tb_main (cpmc,cpgg,lrrq,bzjg,dw,sl,gys,lxfs,bz) values ('"+txt_cpmc+"','"+txt_cpgg+"','"+le_date->text()+"','"+txt_bzjg+
+                        "','台','1','"+txt_gys+"','-','-')";
+                model->setQuery(add_sql);
+                updateTableView();
+            }
+
+
+            if(txt_len==9){
+                QString txt_cpmc=txt1.split(",")[0];
+                QString txt_cpgg=txt1.split(",")[1];
+                QString txt_lrrq=txt1.split(",")[2];
+                QString txt_bzjg=txt1.split(",")[3];
+                QString txt_dw=txt1.split(",")[4];
+                QString txt_sl=txt1.split(",")[5];
+                QString txt_gys=txt1.split(",")[6];
+                QString txt_lxfs=txt1.split(",")[7];
+                QString txt_bz=txt1.split(",")[8];
+
+                if(txt_lrrq==""){
+                    txt_lrrq=le_date->text();
+                }
+                if(txt_dw==""){
+                    txt_dw="台";
+                }
+                if(txt_sl==""){
+                    txt_sl="1";
+                }
+                if(txt_gys==""){
+                    txt_gys="-";
+                }
+                if(txt_lxfs==""){
+                    txt_lxfs="-";
+                }
+                if(txt_bz==""){
+                    txt_bz="-";
+                }
+
+                add_sql="insert into tb_main (cpmc,cpgg,lrrq,bzjg,dw,sl,gys,lxfs,bz) values ('"+txt_cpmc+"','"+txt_cpgg+"','"+txt_lrrq+"','"+txt_bzjg+
+                        "','"+txt_dw+"','"+txt_sl+"','"+txt_gys+"','"+txt_lxfs+"','"+txt_bz+"')";
+                model->setQuery(add_sql);
+                updateTableView();
+
+            }
+
+
+
+        }
 
 
     }
@@ -418,14 +440,16 @@ void MainWindow::method_contentReturn()
     method_query();
 }
 
+
+// hotkey
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
     if((event->key()==Qt::Key_E) && (event->modifiers()==Qt::ControlModifier)){
-        le_content->setFocus();
+        le_content->clear();
     }
 
     if((event->key()==Qt::Key_W) && (event->modifiers()==Qt::ControlModifier)){
-        le_content->clear();
+        le_content->setFocus();
     }
 
     if((event->key()==Qt::Key_S) && (event->modifiers()==Qt::ControlModifier)){
@@ -443,6 +467,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
         le_gys->clear();
         le_lxfs->clear();
         le_bz->clear();
+        initSpinBox();
         le_cpmc->setFocus();
     }
 

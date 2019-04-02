@@ -1,0 +1,22 @@
+/***********************************************/
+// hotkey
+
+ctrl-w foucs le_content  //write
+ctrl-e clear le_content  //
+ctrl-s foucs 产品名称
+ctrl-d foucs 标准价格
+ctrl-f clear all le and foucs 产品名称
+ctrl-q click query button
+ctrl-r click add button
+
+/***********************************************/
+//cmd
+add 产品名称,产品规格,标准价格,供应商
+add ...9
+upd idnum
+del idnum
+
+/***********************************************/
+// - need write
+// = write or not
+// ? repeat 0 or 1

@@ -59,6 +59,8 @@ private:
 
 
 
+
+
 private:
      void initComboBox();
      void initSpinBox();

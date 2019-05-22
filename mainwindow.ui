@@ -131,7 +131,7 @@
       <item>
        <widget class="QPushButton" name="pb_loadcsv">
         <property name="text">
-         <string>加载CSV</string>
+         <string>导入CSV</string>
         </property>
        </widget>
       </item>

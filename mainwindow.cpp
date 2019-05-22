@@ -86,7 +86,7 @@ MainWindow::MainWindow(QWidget *parent) :
     le_date->setEnabled(false);
 
 
-    this->setWindowTitle("PMS 0.0.1 made by  mengtianwxs");
+    this->setWindowTitle("pms 0.0.1 made by  mengtianwxs");
 
 
     ui->tableView->setSelectionBehavior(QAbstractItemView::SelectItems);
@@ -248,13 +248,8 @@ void MainWindow::method_query()
     QString txt=le_content->text();
 
 
-    QString sql="select * from tb_main where cpmc like '%"+txt+"%';";
+    QString sql="select * from tb_main where cpmc like '%"+txt+"%' or cpgg like '%"+txt+"%'";
     model=new QSqlQueryModel(this);
-
-
-
-
-
     model->setQuery(sql);
     model->setHeaderData(0,Qt::Horizontal,"序号");
     model->setHeaderData(1,Qt::Horizontal,"产品名称");
@@ -447,47 +442,55 @@ void MainWindow::method_contentReturn()
 
 void MainWindow::method_loadcsv()
 {
+    //打开文件对话框
     QFileDialog* fd=new QFileDialog(this);
+    //只打开csv格式的数据
     QString filename=fd->getOpenFileName(this,"Open CVS","./","*.csv");
-//    qDebug()<<filename;
     QFile file(filename);
-     file.open(QIODevice::ReadOnly);
+    file.open(QIODevice::ReadOnly);
+    //判断文件是否存在
     if(file.exists()){
- QTextStream * txtstream=new QTextStream(&file);
+        QTextStream * txtstream=new QTextStream(&file);
 
- QStringList txth=txtstream->readAll().split("\n");
-if(txth.count()>4){
- for(int i=2;i<txth.count()-1;i++){
-//     qDebug()<<txth.at(i);
-     for(int n=0;n<txth.at(i).split(",").count();n++){
-//         qDebug()<<txth.at(i).split(",").at(1);
-         //cpmc
-         QString v_cpmc=txth.at(i).split(",").at(1);
-         //cpgg
-         QString v_cpgg=txth.at(i).split(",").at(2);
-         //bzjg
-         QString v_bzjg=txth.at(i).split(",").at(3);
+        QStringList txth=txtstream->readAll().split("\n");
+        //数量限制在4行
+        if(txth.count()>4){
 
-         bool q=dbquery.exec("insert into tb_main (cpmc,cpgg,lrrq,bzjg,dw,sl,gys,lxfs,bz) values ('"+v_cpmc+"','"+v_cpgg+"','"+le_lrrq->text()+"','"+v_bzjg+"','台','1','-','-','-');");
+            //去掉第一行，和最后一行的数据，取中间的有用的数据
+            for(int i=2;i<txth.count()-1;i++){
 
+                for(int n=0;n<txth.at(i).split(",").count();n++){
+
+//                    excel文件中的数据格式
+//                    序号	产品名称	型号规格	单价
+//                    1	万能断路器	DW15-1600 1000/800A 热式AC380V	2800.00
+//                    2	万能断路器	DW15-1600 1000/1000A 热式AC380V	3000.00
 
 
 
-     }
+                    // 得到相应的数据
+                    //cpmc
+                    QString v_cpmc=txth.at(i).split(",").at(1);
+                    //cpgg
+                    QString v_cpgg=txth.at(i).split(",").at(2);
+                    //bzjg
+                    QString v_bzjg=txth.at(i).split(",").at(3);
 
+                    //把数据插入到数据库中
+                    dbquery.exec("insert into tb_main (cpmc,cpgg,lrrq,bzjg,dw,sl,gys,lxfs,bz) values ('"+v_cpmc+"','"+v_cpgg+"','"+le_lrrq->text()+"','"+v_bzjg+"','台','1','-','-','-');");
+
+                }
+
+            }
+
+
+            //关闭文件
+            file.close();
+//            更新显示
+            updateTableView();
+        }
     }
-
-
-    file.close();
-    updateTableView();
-
-
-
 }
-
-
-
-}}
 
 
 // hotkey

@@ -6,7 +6,6 @@
 #include<QPushButton>
 #include<QtSql/QSql>
 #include <QTimer>
-#include<synchapi.h>
 #include <QSqlTableModel>
 #include <QDataWidgetMapper>
 #include <QItemSelectionModel>
@@ -33,6 +32,7 @@ private:
 
     QPushButton* pb_add;
     QPushButton* pb_query;
+    QPushButton* pb_loadcsv;
 
     QTimer* timer;
     QLineEdit *le_date;
@@ -75,6 +75,7 @@ private slots:
     void method_query();
     void method_timer();
     void method_contentReturn();
+    void method_loadcsv();
 
     void keyPressEvent(QKeyEvent* event);
 

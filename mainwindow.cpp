@@ -3,6 +3,7 @@
 
 #include <QAbstractItemView>
 #include <QDateTime>
+#include <QFileDialog>
 #include <QKeyEvent>
 #include <QSplashScreen>
 #include<QSqlError>
@@ -17,6 +18,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //init ui
     pb_add=ui->pb_add;
     pb_query=ui->pb_query;
+    pb_loadcsv=ui->pb_loadcsv;
 
     le_cpgg=ui->le_cpgg;
     le_cpmc=ui->le_cpmc;
@@ -46,6 +48,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(this->pb_add,SIGNAL(clicked()),this,SLOT(method_add()));
     connect(this->pb_query,SIGNAL(clicked()),this,SLOT(method_query()));
     connect(this->le_content,SIGNAL(returnPressed()),this,SLOT(method_contentReturn()));
+    connect(this->pb_loadcsv,SIGNAL(clicked()),this,SLOT(method_loadcsv()));
 
     le_content->setPlaceholderText("产品名称 / 产品规格 / upd 1 / del 1 ");
 
@@ -76,6 +79,8 @@ MainWindow::MainWindow(QWidget *parent) :
     timer=new QTimer(this);
     timer->setInterval(1000);
     timer->start();
+
+
     connect(timer,SIGNAL(timeout()),this,SLOT(method_timer()));
     le_date=ui->le_date;
     le_date->setEnabled(false);
@@ -423,7 +428,7 @@ void MainWindow::method_query()
     }
 
 
-
+  le_content->clear();
 
 }
 
@@ -439,6 +444,50 @@ void MainWindow::method_contentReturn()
 
     method_query();
 }
+
+void MainWindow::method_loadcsv()
+{
+    QFileDialog* fd=new QFileDialog(this);
+    QString filename=fd->getOpenFileName(this,"Open CVS","./","*.csv");
+//    qDebug()<<filename;
+    QFile file(filename);
+     file.open(QIODevice::ReadOnly);
+    if(file.exists()){
+ QTextStream * txtstream=new QTextStream(&file);
+
+ QStringList txth=txtstream->readAll().split("\n");
+if(txth.count()>4){
+ for(int i=2;i<txth.count()-1;i++){
+//     qDebug()<<txth.at(i);
+     for(int n=0;n<txth.at(i).split(",").count();n++){
+//         qDebug()<<txth.at(i).split(",").at(1);
+         //cpmc
+         QString v_cpmc=txth.at(i).split(",").at(1);
+         //cpgg
+         QString v_cpgg=txth.at(i).split(",").at(2);
+         //bzjg
+         QString v_bzjg=txth.at(i).split(",").at(3);
+
+         bool q=dbquery.exec("insert into tb_main (cpmc,cpgg,lrrq,bzjg,dw,sl,gys,lxfs,bz) values ('"+v_cpmc+"','"+v_cpgg+"','"+le_lrrq->text()+"','"+v_bzjg+"','台','1','-','-','-');");
+
+
+
+
+     }
+
+    }
+
+
+    file.close();
+    updateTableView();
+
+
+
+}
+
+
+
+}}
 
 
 // hotkey

@@ -453,13 +453,16 @@ void MainWindow::method_loadcsv()
         QTextStream * txtstream=new QTextStream(&file);
 
         QStringList txth=txtstream->readAll().split("\n");
+        qDebug()<<txth.length();
+        qDebug()<<txth.at(2).split(",").count();
         //数量限制在4行
+        int hangshu=txth.length()-1;
+        int lieshu=txth.at(2).split(",").count();
         if(txth.count()>4){
 
             //去掉第一行，和最后一行的数据，取中间的有用的数据
-            for(int i=2;i<txth.count()-1;i++){
+            for(int i=1;i<hangshu;i++){
 
-                for(int n=0;n<txth.at(i).split(",").count();n++){
 
 //                    excel文件中的数据格式
 //                    序号	产品名称	型号规格	单价
@@ -475,15 +478,17 @@ void MainWindow::method_loadcsv()
                     QString v_cpgg=txth.at(i).split(",").at(2);
                     //bzjg
                     QString v_bzjg=txth.at(i).split(",").at(3);
+                    qDebug()<<v_cpmc<<v_cpgg<<v_bzjg;
 
                     //把数据插入到数据库中
                     dbquery.exec("insert into tb_main (cpmc,cpgg,lrrq,bzjg,dw,sl,gys,lxfs,bz) values ('"+v_cpmc+"','"+v_cpgg+"','"+le_lrrq->text()+"','"+v_bzjg+"','台','1','-','-','-');");
 
-                }
+
 
             }
 
 
+            txtstream->reset();
             //关闭文件
             file.close();
 //            更新显示

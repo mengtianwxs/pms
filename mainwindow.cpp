@@ -435,7 +435,7 @@ void MainWindow::method_timer()
 
 void MainWindow::method_contentReturn()
 {
-    qDebug()<<"click query";
+//    qDebug()<<"click query";
 
     method_query();
 }
@@ -457,7 +457,7 @@ void MainWindow::method_loadcsv()
         qDebug()<<txth.at(2).split(",").count();
         //数量限制在4行
         int hangshu=txth.length()-1;
-        int lieshu=txth.at(2).split(",").count();
+//        int lieshu=txth.at(2).split(",").count();
         if(txth.count()>4){
 
             //去掉第一行，和最后一行的数据，取中间的有用的数据
@@ -478,7 +478,7 @@ void MainWindow::method_loadcsv()
                     QString v_cpgg=txth.at(i).split(",").at(2);
                     //bzjg
                     QString v_bzjg=txth.at(i).split(",").at(3);
-                    qDebug()<<v_cpmc<<v_cpgg<<v_bzjg;
+//                    qDebug()<<v_cpmc<<v_cpgg<<v_bzjg;
 
                     //把数据插入到数据库中
                     dbquery.exec("insert into tb_main (cpmc,cpgg,lrrq,bzjg,dw,sl,gys,lxfs,bz) values ('"+v_cpmc+"','"+v_cpgg+"','"+le_lrrq->text()+"','"+v_bzjg+"','台','1','-','-','-');");
